@@ -21,7 +21,7 @@ public class Loader {
 				long opcode = Long.parseLong(line, 2);
 				if (!Assembler.noArgument.contains(Long.toHexString(opcode))) {
 					String dline = file.nextLine();
-					if (dline.charAt(0)=='0') {
+					if (!(dline.charAt(0)=='1' && dline.length()==32)) {
 						arg = Long.parseLong(dline, 2);
 					}
 					else {

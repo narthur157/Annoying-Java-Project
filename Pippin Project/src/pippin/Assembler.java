@@ -186,9 +186,10 @@ public class Assembler {
 		if (spl.length == 1) { // noArgument case is special
 			if (noArgument.contains(spl[0])) {
 				code=code*4;
-				s+=Integer.toBinaryString(code);
+				s+=Integer.toBinaryString(code) + "\n";
 
 				assembled += Integer.toBinaryString(code) + "\n";
+				return s;
 /*				StringBuilder str = new StringBuilder();
 				for (int i = 0; i< 32; i++) {
 					if (32-)
@@ -211,6 +212,7 @@ public class Assembler {
 	}
 	public static String makeCodeString(boolean direct, boolean immediate, boolean indirect, String[] spl) {
 		int code=0;	
+		//System.out.println(spl[0]);// + " " + spl[1]);
 		int n = Integer.parseInt(spl[1], 16);
 		String s = "";
 		String k=spl[0]; 	// INSTRUCTION CODE
