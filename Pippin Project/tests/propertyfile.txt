@@ -1,0 +1,4 @@
+#File locations
+#Sun Dec 01 20:04:23 EST 2013
+ExecutableDirectory=C\:/Users/Nick/git/Assign6/Assign6/
+SourceDirectory=C\:/Users/Nick/git/Assign6/Assign6/
