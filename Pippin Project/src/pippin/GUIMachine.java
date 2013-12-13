@@ -388,6 +388,7 @@ public class GUIMachine extends Observable {
 
 	private void finalLoadOrReloadStep() {
 		try {
+			clearAll();
 			Loader.load(memory, currentlyExecutingFile);
 			setRunning(true);
 			setAutoStepOn(false);
@@ -419,13 +420,26 @@ public class GUIMachine extends Observable {
                 in.execute(arg, immediate, indirect);
             }
         } catch(CodeAccessException e) {
+        	halt();
+        	running=false;
             JOptionPane.showMessageDialog(
                     frame,
                     "Code Access Exception for program counter " + pc,
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
 
-        } catch(DataAccessException e) {
+        } catch(DivideByZeroException e) {
+        	halt();
+        	running=false;
+        	JOptionPane.showMessageDialog(
+                    frame,
+                    "Divide By Zero Exception for program counter " + pc,
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+        catch(DataAccessException e) {
+        	halt();
+        	running=false;
             JOptionPane.showMessageDialog(
                     frame,
                     "Data Access Exception for argument " + arg,
@@ -433,6 +447,7 @@ public class GUIMachine extends Observable {
                     JOptionPane.WARNING_MESSAGE);
 
         }
+        
         setChanged();
         notifyObservers();
 /*        System.out.println("Content of Data Memory after execution");

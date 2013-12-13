@@ -88,12 +88,49 @@ public class Assembler {
 	 * Assembles a File input containing pippin assembly onto a File output containing the binary executable
 	 * Immediate mode is specified by #, indirect mode is specified by &
 	 * DATA specifies the end of code and the beginning of memory, which are explicitly separated
-	 * Example program
+	 * & specifies an indirect instruction which uses the argument (a memory location) as a pointer to another memory location
+	 * so that LOD& X puts memory[memory[X]] in the accumulator
+	 * # specifies an immediate instruction and uses a given number (i.e. ADD# 5 adds 5 to the accumulator contents)
+	 * specifies a direct instruction which takes a value from the argument memory location
+	 *  
+	 * Example factorial program
+	 * LOD 0
+	 * STO 1
+	 * LOD 0
+	 * SUB# 1
+	 * STO 0
+	 * CMPZ 0
+	 * SUB# 1
+	 * JMPZ B
+	 * LOD 0
+	 * MUL 1
+	 * JUMP 1
+	 * HALT
+	 * DATA
+	 * 0 8
+	 * 	
+	 * LOD& 0
+	 * STO& 1
+	 * LOD& 0
+	 * SUB# 1
+	 * STO& 0
+	 * LOD& 0
+	 * STO 5
+	 * CMPZ 5
+	 * SUB# 1
+	 * JMPZ& 3
+	 * LOD& 0
+	 * MUL& 1
+	 * JUMP& 2
+	 * HALT
+	 * DATA
+	 * 0 10
+	 * 1 20
+	 * 2 1
+	 * 3 D
+	 * 10 7
 	 * 
-	 * LOD&   	5
-	 * DATA 
-	 * 0 0
-	 * 5 0
+	 * 
 	 * @param input the source file containing assembly instructions
 	 * @param output the file that binary code should be written to
 	 * @return True if the input File contained valid code
@@ -130,18 +167,19 @@ public class Assembler {
 				}
 				if (goodProgram) {
 					if (inCode) {
+						System.out.println(spl[0]);
 						if (spl[0].equals("DATA")) {
 							outp.write("11111111111111111111111111111111\n");
 							inCode = false;
 						}
 						else {
 							String c = getCodes(spl);
+							System.out.println(c);
 							outp.write(c);
 							assembled += c;
 						}
 					}
 					else {
-						//TODO figure out why this balks at blank lines
 						String d = getData(spl);
 						outp.write(d);
 						assembled += d;
@@ -183,25 +221,29 @@ public class Assembler {
 		boolean immediate = false;
 		boolean indirect = false;
 		String s = "";
-		if (spl.length == 1) { // noArgument case is special
-			if (noArgument.contains(spl[0])) {
-				code=code*4;
-				s+=Integer.toBinaryString(code) + "\n";
+		if (noArgument.contains(spl[0])) {
+			
+			code=opcode.get(spl[0])*4;
+			System.out.println(spl[0] + code);
+			s+=Integer.toBinaryString(code) + "\n";
 
-				assembled += Integer.toBinaryString(code) + "\n";
-				return s;
+			assembled += Integer.toBinaryString(code) + "\n";
+			return s;
+		}
+		if (spl.length == 1) { // noArgument case is special
+			
 /*				StringBuilder str = new StringBuilder();
 				for (int i = 0; i< 32; i++) {
 					if (32-)
 				}
 				return s;*/
-			}
-			else {
+			
+/*			else {
 				goodProgram=false;
 				System.out.println(keyError + lineCounter);
 				assembled += keyError + lineCounter;
 				return "0";
-			}
+			}*/
 		}
 		if (spl.length==2) {
 			char c = spl[0].charAt(spl[0].length() - 1);
@@ -241,11 +283,23 @@ public class Assembler {
 		else {
 			System.out.println(keyError + lineCounter);
 			assembled += keyError + lineCounter;
-			return "0";
+			return "";
 		}
 	}
 	public static String makeBinaryCodeString(int code, int n) {
 		return (Integer.toBinaryString(code)
 				+ "\n" + Integer.toBinaryString(n));
+	}
+	public static String first(Map<String, Integer> m, int i) {		// takes a binary opcode and returns the mapped string
+		String ret = "";
+		if(m.containsValue(i)) {
+			for(String str : m.keySet()) {
+				if(m.get(str) == i) {
+					ret = str;
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 }
