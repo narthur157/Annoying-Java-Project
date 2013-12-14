@@ -167,14 +167,12 @@ public class Assembler {
 				}
 				if (goodProgram) {
 					if (inCode) {
-						System.out.println(spl[0]);
 						if (spl[0].equals("DATA")) {
 							outp.write("11111111111111111111111111111111\n");
 							inCode = false;
 						}
 						else {
 							String c = getCodes(spl);
-							System.out.println(c);
 							outp.write(c);
 							assembled += c;
 						}
@@ -201,10 +199,13 @@ public class Assembler {
 	public static String getData(String[] spl) {
 		String s = "";
 		try {
+			//System.out.println()
+			//System.out.println(spl[1]);
 			s = (spl[0].length()>0 ? Integer.toBinaryString(Integer.parseInt(spl[0], 16)) : "")
 					+ "\n"
-					+ (spl[0].length()>0 ? Integer.toBinaryString(Integer.parseInt(spl[1], 16)) : "");
-			
+					+ (spl[0].length()>0 ? Integer.toBinaryString(Integer.parseInt(spl[1], 16)) : "")
+					+ "\n";
+			System.out.println(s);
 				assembled += s + "\n";
 		}
 		catch (NumberFormatException e) { 
@@ -224,7 +225,6 @@ public class Assembler {
 		if (noArgument.contains(spl[0])) {
 			
 			code=opcode.get(spl[0])*4;
-			System.out.println(spl[0] + code);
 			s+=Integer.toBinaryString(code) + "\n";
 
 			assembled += Integer.toBinaryString(code) + "\n";
@@ -249,6 +249,7 @@ public class Assembler {
 			char c = spl[0].charAt(spl[0].length() - 1);
 			immediate = (c == '#');
 			indirect = (c == '&');	
+			if (!(immediate || indirect)) direct=true;
 		}
 		return makeCodeString(direct, immediate, indirect, spl);
 	}

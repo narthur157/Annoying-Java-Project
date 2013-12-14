@@ -212,7 +212,6 @@ public class Memory {
 			Instruction in = machine.INSTRUCTION_SET[opcode / 4];
 			boolean immediate = opcode % 2 == 1;
 			boolean indirect = (opcode / 2) % 2 == 1;
-			System.out.println(in);
 			String inString = in.toString();
 			if (immediate)
 				inString += "#";
