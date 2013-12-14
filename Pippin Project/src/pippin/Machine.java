@@ -54,18 +54,17 @@ public class Machine {
     	running=bool;
     }
 
-    public static void main(String[] args) throws CodeAccessException, DataAccessException {
+    public static void main(String[] args) throws CodeAccessException, DataAccessException, IOException {
         Machine sim = new Machine();
         System.out.println("Name of file to assemble and run: ");
         Scanner keyboard = new Scanner(System.in);
         File asm = new File(keyboard.nextLine());
         if(asm.exists()) {
             File exe = new File("temp.pipex");
+
             Assembler.assemble(asm, exe);
-            try {
-            	Loader.load(sim.memory, exe);
-            }
-            catch (IOException e) {}
+            Loader.load(sim.memory, exe);
+
             sim.running = true;
             sim.proc.setProgramCounter(0);
             int pc = 0;

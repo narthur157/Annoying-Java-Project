@@ -38,63 +38,65 @@ import pippin.instructions.STO;
 import pippin.instructions.SUB;
 
 /**
-* CLASS GUIMachine
-* @author Nick Arthur
-* @author Sri Edara
-* @author Tori Hallett
-* @author Alex Strong
-*/
+ * CLASS GUIMachine
+ * 
+ * @author Nick Arthur
+ * @author Sri Edara
+ * @author Tori Hallett
+ * @author Alex Strong
+ */
 
 public class GUIMachine extends Observable {
-    public final Instruction[] INSTRUCTION_SET = new Instruction[16];
-    private States state;
-    private JFrame frame;
-    private Processor proc = new Processor();
-    private Memory memory = new Memory(this);
-    private boolean running = false;
-    private boolean autoStepOn = false; 
-    private File currentlyExecutingFile = null; 
-    private static final int TICK = 250;	// 1/4 second
-    private String sourceDir; 
-    private String executableDir; 
-    private String eclipseDir; 
-    private Properties properties = null; 
-     
-    private CodeViewPanel codeViewPanel; 
+	public final Instruction[] INSTRUCTION_SET = new Instruction[16];
+	private States state;
+	private JFrame frame;
+	private Processor proc = new Processor();
+	private Memory memory = new Memory(this);
+	private boolean running = false;
+	private boolean autoStepOn = false;
+	private File currentlyExecutingFile = null;
+	private static final int TICK = 250; // 1/4 second
+	private String sourceDir;
+	private String executableDir;
+	private String eclipseDir;
+	private Properties properties = null;
 
-    private DataViewPanel dataViewPanel; 
-    private ControlPanel controlPanel; 
-    private ProcessorViewPanel processorPanel;
-    private MenuBarBuilder menuBuilder;
+	private CodeViewPanel codeViewPanel;
 
-    public GUIMachine() {
-        INSTRUCTION_SET[0] = new NOP(proc, memory);
-        INSTRUCTION_SET[1] = new LOD(proc, memory);
-        INSTRUCTION_SET[2] = new STO(proc, memory);
-        INSTRUCTION_SET[3] = new ADD(proc, memory);
-        INSTRUCTION_SET[4] = new SUB(proc, memory);
-        INSTRUCTION_SET[5] = new MUL(proc, memory);
-        INSTRUCTION_SET[6] = new DIV(proc, memory);
-        INSTRUCTION_SET[7] = new AND(proc, memory);
-        INSTRUCTION_SET[8] = new NOT(proc, memory);
-        INSTRUCTION_SET[9] = new CMPZ(proc, memory);
-        INSTRUCTION_SET[10] = new CMPL(proc, memory);
-        INSTRUCTION_SET[11] = new JUMP(proc, memory);
-        INSTRUCTION_SET[12] = new JMPZ(proc, memory);
-        INSTRUCTION_SET[15] = new HALT(proc, memory);
-        ((HALT)INSTRUCTION_SET[15]).setGmachine(this);
-//copy the others over from Machine
-        ((HALT)INSTRUCTION_SET[15]).setGmachine(this);
-// a lot more code to come here...
-        setUpDirectories();
-        createAndShowGUI();
-        state = States.NOTHING_LOADED;
-        state.enter();
-        setChanged();
-        notifyObservers();
-        javax.swing.Timer timer = new javax.swing.Timer(TICK, new TimerListener());
-        timer.start();
-    }
+	private DataViewPanel dataViewPanel;
+	private ControlPanel controlPanel;
+	private ProcessorViewPanel processorPanel;
+	private MenuBarBuilder menuBuilder;
+
+	public GUIMachine() {
+		INSTRUCTION_SET[0] = new NOP(proc, memory);
+		INSTRUCTION_SET[1] = new LOD(proc, memory);
+		INSTRUCTION_SET[2] = new STO(proc, memory);
+		INSTRUCTION_SET[3] = new ADD(proc, memory);
+		INSTRUCTION_SET[4] = new SUB(proc, memory);
+		INSTRUCTION_SET[5] = new MUL(proc, memory);
+		INSTRUCTION_SET[6] = new DIV(proc, memory);
+		INSTRUCTION_SET[7] = new AND(proc, memory);
+		INSTRUCTION_SET[8] = new NOT(proc, memory);
+		INSTRUCTION_SET[9] = new CMPZ(proc, memory);
+		INSTRUCTION_SET[10] = new CMPL(proc, memory);
+		INSTRUCTION_SET[11] = new JUMP(proc, memory);
+		INSTRUCTION_SET[12] = new JMPZ(proc, memory);
+		INSTRUCTION_SET[15] = new HALT(proc, memory);
+		((HALT) INSTRUCTION_SET[15]).setGmachine(this);
+		// copy the others over from Machine
+		((HALT) INSTRUCTION_SET[15]).setGmachine(this);
+		// a lot more code to come here...
+		setUpDirectories();
+		createAndShowGUI();
+		state = States.NOTHING_LOADED;
+		state.enter();
+		setChanged();
+		notifyObservers();
+		javax.swing.Timer timer = new javax.swing.Timer(TICK,
+				new TimerListener());
+		timer.start();
+	}
 
 	private void setUpDirectories() {
 		File temp = new File("propertyfile.txt");
@@ -137,44 +139,45 @@ public class GUIMachine extends Observable {
 		}
 	}
 
-    public void halt() {
-        running = false;
-    }
+	public void halt() {
+		running = false;
+	}
 
-    private void createAndShowGUI() {
-        frame = new JFrame("Pippin Simulator");
-        Container content = frame.getContentPane();
-        content.setLayout(new BorderLayout(1,1));
-        content.setBackground(Color.BLACK);
-        frame.setSize(800,600);
+	private void createAndShowGUI() {
+		frame = new JFrame("Pippin Simulator");
+		Container content = frame.getContentPane();
+		content.setLayout(new BorderLayout(1, 1));
+		content.setBackground(Color.BLACK);
+		frame.setSize(800, 600);
 
-        menuBuilder = new MenuBarBuilder(this);
-        codeViewPanel=new CodeViewPanel(this);
-        processorPanel = new ProcessorViewPanel(this);
-        dataViewPanel = new DataViewPanel(this);
-        controlPanel = new ControlPanel(this); 
-        JMenuBar bar = new JMenuBar();
-        frame.setJMenuBar(bar);
-        frame.add(dataViewPanel.createDataDisplay(), BorderLayout.LINE_END);
-        frame.add(codeViewPanel.createCodeDisplay(), BorderLayout.CENTER);
-        frame.add(controlPanel.createControlDisplay(),BorderLayout.PAGE_END);
-        bar.add(menuBuilder.createMenu1());
-        bar.add(menuBuilder.createMenu2());
+		menuBuilder = new MenuBarBuilder(this);
+		codeViewPanel = new CodeViewPanel(this);
+		processorPanel = new ProcessorViewPanel(this);
+		dataViewPanel = new DataViewPanel(this);
+		controlPanel = new ControlPanel(this);
+		JMenuBar bar = new JMenuBar();
+		frame.setJMenuBar(bar);
+		frame.add(dataViewPanel.createDataDisplay(), BorderLayout.LINE_END);
+		frame.add(codeViewPanel.createCodeDisplay(), BorderLayout.CENTER);
+		frame.add(controlPanel.createControlDisplay(), BorderLayout.PAGE_END);
+		bar.add(menuBuilder.createMenu1());
+		bar.add(menuBuilder.createMenu2());
 
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new ExitAdapter());
-        state = States.NOTHING_LOADED;
-        state.enter();
-        setChanged();
-        notifyObservers();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new ExitAdapter());
+		state = States.NOTHING_LOADED;
+		state.enter();
+		setChanged();
+		notifyObservers();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 
-    }
-    public void step() {
-        int pc = 0;
-        int arg = 0;
-        try {
+	}
+
+	public void step() {
+		int pc = 0;
+		int arg = 0;
+		try {
 			pc = proc.getProgramCounter();
 			int opcode = memory.getOpcode(pc);
 			Instruction in = INSTRUCTION_SET[opcode / 4];
@@ -182,38 +185,37 @@ public class GUIMachine extends Observable {
 			boolean immediate = opcode % 2 == 1;
 			boolean indirect = (opcode / 2) % 2 == 1;
 			in.execute(arg, immediate, indirect);
-        } catch(CodeAccessException e) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "Code Access Exception for program counter " + pc,
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+		} catch (CodeAccessException e) {
+			JOptionPane.showMessageDialog(frame,
+					"Code Access Exception for program counter " + pc,
+					"Warning", JOptionPane.WARNING_MESSAGE);
 
-        } catch(DataAccessException e) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "Data Access Exception for argument " + arg,
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+		} catch (DataAccessException e) {
+			JOptionPane.showMessageDialog(frame,
+					"Data Access Exception for argument " + arg, "Warning",
+					JOptionPane.WARNING_MESSAGE);
 
-        }
-        setChanged();
-        notifyObservers();
-    }
-    public void clearAll() {
-    	state = States.NOTHING_LOADED;
-    	state.enter();
-    	setAutoStepOn(false);
-    	memory.clearMemory();
-    	proc.setAccumulator(0);
-    	proc.setProgramCounter(0);
-    	setChanged();
-    	notifyObservers();
-    }
-    public void reload() {
-    	clearAll(); 
-    	finalLoadOrReloadStep(); 
-    }
+		}
+		setChanged();
+		notifyObservers();
+	}
+
+	public void clearAll() {
+		state = States.NOTHING_LOADED;
+		state.enter();
+		setAutoStepOn(false);
+		memory.clearMemory();
+		proc.setAccumulator(0);
+		proc.setProgramCounter(0);
+		setChanged();
+		notifyObservers();
+	}
+
+	public void reload() {
+		clearAll();
+		finalLoadOrReloadStep();
+	}
+
 	public Memory getMemory() {
 		return memory;
 	}
@@ -238,17 +240,17 @@ public class GUIMachine extends Observable {
 		autoStepOn = b;
 	}
 
-    public States getState() {
-        return state;
-    }
+	public States getState() {
+		return state;
+	}
 
-    public void setState(States state) {
-        this.state = state;
-    }
+	public void setState(States state) {
+		this.state = state;
+	}
 
-    public boolean isRunning() {
-        return running;
-    }
+	public boolean isRunning() {
+		return running;
+	}
 
 	public void setRunning(boolean b) {
 		running = b;
@@ -266,24 +268,22 @@ public class GUIMachine extends Observable {
 		}
 	}
 
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new GUIMachine();
-            }
-        });
-    }
+	public static void main(String[] args) {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new GUIMachine();
+			}
+		});
+	}
 
-    public void exit() { // method executed when user exits the program
-        int decision = JOptionPane.showConfirmDialog(
-                frame,
-                "Do you really wish to exit?",
-                "Confirmation",
-                JOptionPane.YES_NO_OPTION);
-        if (decision == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
-    }
+	public void exit() { // method executed when user exits the program
+		int decision = JOptionPane.showConfirmDialog(frame,
+				"Do you really wish to exit?", "Confirmation",
+				JOptionPane.YES_NO_OPTION);
+		if (decision == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
 
 	public void assembleFile() {
 		File source = null;
@@ -334,15 +334,23 @@ public class GUIMachine extends Observable {
 				} catch (Exception e) {
 					System.out.println("Error writing properties file");
 				}
-				boolean assembled = Assembler.assemble(source, outputExe);
-				if (assembled) {
-					JOptionPane.showMessageDialog(frame,
-							"The source was assembled to an executable",
-							"Success", JOptionPane.INFORMATION_MESSAGE);
-				} else {
+				try {
+					boolean assembled = Assembler.assemble(source, outputExe);
+					if (assembled) {
+						JOptionPane.showMessageDialog(frame,
+								"The source was assembled to an executable",
+								"Success", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(frame,
+								"The selected file has problems.\n"
+										+ "Cannot assemble the program", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+				catch (Exception e) {
 					JOptionPane.showMessageDialog(frame,
 							"The selected file has problems.\n"
-									+ "Cannot assemble the program", "Warning",
+							+ "Cannot assemble the program", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 				}
 			} else {
@@ -351,11 +359,12 @@ public class GUIMachine extends Observable {
 						JOptionPane.WARNING_MESSAGE);
 			}
 		} else {
-				JOptionPane.showMessageDialog(frame,
-						"The input file was not selected or found", "Warning",
-						JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(frame,
+					"The input file was not selected or found", "Warning",
+					JOptionPane.WARNING_MESSAGE);
 		}
 	}
+
 	public void loadFile() {
 		JFileChooser chooser = new JFileChooser(executableDir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -378,18 +387,39 @@ public class GUIMachine extends Observable {
 				properties.store(new FileOutputStream("propertyfile.txt"),
 						"File locations");
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(frame, "The properties file cannot be written", "Warning", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(frame,
+						"The properties file cannot be written", "Warning",
+						JOptionPane.WARNING_MESSAGE);
 			}
 			finalLoadOrReloadStep();
 		} else {
-				JOptionPane.showMessageDialog(frame, "The file cannot be written", "Warning", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(frame, "The file cannot be written",
+					"Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
 	private void finalLoadOrReloadStep() {
 		try {
 			clearAll();
-			Loader.load(memory, currentlyExecutingFile);
+			try {
+				Loader.load(memory, currentlyExecutingFile);
+			}
+			catch(CodeAccessException e) {
+	        	halt();
+	        	running=false;
+	            JOptionPane.showMessageDialog(
+	                    frame,
+	                    "Code Access Exception",
+	                    "Warning",
+	                    JOptionPane.WARNING_MESSAGE);
+			}
+			catch (DataAccessException e) {
+				halt();
+				running = false;
+				JOptionPane.showMessageDialog(frame,
+						"Data Access Exception ", "Warning",
+						JOptionPane.WARNING_MESSAGE);
+			}
 			setRunning(true);
 			setAutoStepOn(false);
 			proc.setAccumulator(0);
@@ -405,75 +435,57 @@ public class GUIMachine extends Observable {
 					JOptionPane.WARNING_MESSAGE);
 		}
 	}
-    public void execute() {
-        // WILL BE REPLACED LATER
-        int pc = 0;
-        int arg = 0;
-        try {
-            while(running) {
-                pc = proc.getProgramCounter();
-                int opcode = memory.getOpcode(pc);
-                Instruction in = INSTRUCTION_SET[opcode/4]; 
-                arg = memory.getArg(pc);
-                boolean immediate = opcode % 2 == 1;
-                boolean indirect = (opcode/2) % 2 == 1;
-                in.execute(arg, immediate, indirect);
-            }
-        } catch(CodeAccessException e) {
-        	halt();
-        	running=false;
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "Code Access Exception for program counter " + pc,
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
 
-        } catch(DivideByZeroException e) {
-        	halt();
-        	running=false;
-        	JOptionPane.showMessageDialog(
-                    frame,
-                    "Divide By Zero Exception for program counter " + pc,
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
-        }
-        catch(DataAccessException e) {
-        	halt();
-        	running=false;
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "Data Access Exception for argument " + arg,
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+	public void execute() {
+		int pc = 0;
+		int arg = 0;
+		try {
+			while (running) {
+				pc = proc.getProgramCounter();
+				int opcode = memory.getOpcode(pc);
+				Instruction in = INSTRUCTION_SET[opcode / 4];
+				arg = memory.getArg(pc);
+				boolean immediate = opcode % 2 == 1;
+				boolean indirect = (opcode / 2) % 2 == 1;
+				in.execute(arg, immediate, indirect);
+			}
+		} catch (CodeAccessException e) {
+			halt();
+			running = false;
+			JOptionPane.showMessageDialog(frame,
+					"Code Access Exception for program counter " + pc,
+					"Warning", JOptionPane.WARNING_MESSAGE);
 
-        }
-        
-        setChanged();
-        notifyObservers();
-/*        System.out.println("Content of Data Memory after execution");
-        try {
-            for(int i = 0; i < 32; i++) {
-                for(int j = 0; j < 16; j++) {
-                    System.out.print(16*i+j + ":" + memory.getData(16*i+j) + "\t|");
-                }
-                System.out.println();
-            }
-        } catch(DataAccessException e) {
-            // not expected at all
-            e.printStackTrace();
-        }*/
-    }
+		} catch (DivideByZeroException e) {
+			halt();
+			running = false;
+			JOptionPane.showMessageDialog(frame,
+					"Divide By Zero Exception for program counter " + pc,
+					"Warning", JOptionPane.WARNING_MESSAGE);
+		} catch (DataAccessException e) {
+			halt();
+			running = false;
+			JOptionPane.showMessageDialog(frame,
+					"Data Access Exception for argument " + arg, "Warning",
+					JOptionPane.WARNING_MESSAGE);
 
-    private class ExitAdapter extends WindowAdapter {
-        @Override
-        public void windowClosing(WindowEvent arg0) {
-            exit();
-        }
-    }
-    private class TimerListener implements ActionListener {
-    	@Override
-    	public void actionPerformed(ActionEvent e) {
-    		if (autoStepOn) step();
-    	}
-    }
+		}
+		setChanged();
+		notifyObservers();
+	}
+
+	private class ExitAdapter extends WindowAdapter {
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			exit();
+		}
+	}
+
+	private class TimerListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (autoStepOn)
+				step();
+		}
+	}
 }

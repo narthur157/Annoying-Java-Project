@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Loader {
-	static public void load(Memory m, File f) throws IOException {
+	static public void load(Memory m, File f) throws IOException,
+			CodeAccessException, DataAccessException {
 		Scanner file = new Scanner(f);
 		int index = 0;
 		boolean inData = false;
@@ -14,25 +15,19 @@ public class Loader {
 
 			if (line.equals("11111111111111111111111111111111")) {
 				inData = true;
-				line = file.nextLine();
+				if (file.hasNextLine())
+					line = file.nextLine();
 			}
-
 			if (!inData) {
 				long arg = 0;
 				long opcode = Long.parseLong(line, 2);
-				// boolean oc = Assembler.opcode.containsValue(opcode);
 				String o = null;
-				// if(oc) {
-
 				o = Assembler.first(Assembler.opcode, (int) opcode / 4);
-				// }
 				System.out.print("Opcode: " + opcode + " Instruction : " + o
 						+ "    ");
 				if (!Assembler.noArgument.contains(o)) {
 					String dline = file.nextLine();
-					if (!(dline.charAt(0) == '1' && dline.length() == 32)) { // if
-																				// not
-																				// negative
+					if (!(dline.charAt(0) == '1' && dline.length() == 32)) {
 						arg = Long.parseLong(dline, 2);
 					} else {
 						StringBuilder str = new StringBuilder();
@@ -42,33 +37,17 @@ public class Loader {
 							else
 								str.append('0');
 						}
-						arg = Long.parseLong(str.toString(), 2) + 1; // make it
-																		// properly
-																		// negative
+						arg = Long.parseLong(str.toString(), 2) + 1;
 						arg *= -1;
 					}
 				}
-				try {
-					System.out.println("Index: " + index + " Opcode:  "
-							+ opcode + " Arg: " + arg + "\n");
-					m.setCode(index, (int) opcode, (int) arg);
-				} catch (CodeAccessException e) {
-					System.out.println("ERROR: Cannot access code location "
-							+ index);
-				}
+				m.setCode(index, (int) opcode, (int) arg);
 			} else {
-
 				int address = Integer.parseInt(line, 2);
 				if (file.hasNextInt()) {
 					System.out.println(address);
 					int value = Integer.parseInt(file.nextLine(), 2);
-					try {
-						m.setData(address, value);
-					} catch (DataAccessException e) {
-						System.out
-								.println("ERROR: Cannot access data location "
-										+ address);
-					}
+					m.setData(address, value);
 				}
 
 			}
