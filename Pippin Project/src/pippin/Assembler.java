@@ -211,7 +211,7 @@ public class Assembler {
 			return s;
 		}
 		if (spl.length == 2) {
-			if (Character.isAlphabetic(spl[1].charAt(0))) goodProgram=false;
+			Integer.parseInt(spl[1], 16);
 			char c = spl[0].charAt(spl[0].length() - 1);
 			immediate = (c == '#');
 			indirect = (c == '&');
