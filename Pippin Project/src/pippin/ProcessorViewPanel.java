@@ -16,6 +16,8 @@ public class ProcessorViewPanel implements Observer {
 	JTextField pcField = new JTextField();
 	public ProcessorViewPanel(GUIMachine machine) {
 		proc = machine.getProcessor();
+		accField.setEditable(false);
+		pcField.setEditable(false);
 		machine.addObserver(this);
 	}
 	

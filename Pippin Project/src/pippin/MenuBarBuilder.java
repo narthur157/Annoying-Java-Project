@@ -26,24 +26,23 @@ public class MenuBarBuilder implements Observer {
     public JMenu createMenu1() {
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
-
-        assemble.setMnemonic(KeyEvent.VK_A);
+        assemble.setMnemonic(KeyEvent.VK_S);
         assemble.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_S, InputEvent.CTRL_MASK));
         assemble.addActionListener(new AssembleListener());
         menu.add(assemble);
         load.setMnemonic(KeyEvent.VK_L);
         load.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_L, InputEvent.CTRL_MASK));
         load.addActionListener(new LoadListener());
         menu.add(load);
         
 // add the JMenuItem load, with mnemonic L, accelerator CTRL+L, and listener LoadListener()
 
         menu.addSeparator(); // puts a line across the menu
-        exit.setMnemonic(KeyEvent.VK_E);
+        exit.setMnemonic(KeyEvent.VK_Q);
         exit.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_Q, InputEvent.CTRL_MASK));
         exit.addActionListener(new ExitListener());
         menu.add(exit);
 // add the JMenuItem exit, with mnemonic E, accelerator CTRL+E, and listener ExitListener()
@@ -58,7 +57,7 @@ public class MenuBarBuilder implements Observer {
     	menu.setMnemonic(KeyEvent.VK_X);
     	go.setMnemonic(KeyEvent.VK_G);
     	go.setAccelerator(KeyStroke.getKeyStroke(
-    			KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK));
+    			KeyEvent.VK_G, InputEvent.CTRL_MASK));
     	go.addActionListener(new ExecuteListener());
     	menu.add(go);
     	

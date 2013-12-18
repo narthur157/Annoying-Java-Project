@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 /**
  * CLASS GUIMachine
  * 
@@ -179,7 +181,9 @@ public class Assembler {
 					outp.write(d);
 				}
 			}
+				
 		}
+		if(!goodProgram) JOptionPane.showMessageDialog(null, keyError + lineCounter);
 		inp.close();
 		outp.close();
 		if (!goodProgram && output != null && output.exists()) {

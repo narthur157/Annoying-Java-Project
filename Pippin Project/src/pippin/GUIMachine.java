@@ -117,7 +117,6 @@ public class GUIMachine extends Observable {
 		eclipseDir = eclipseDir.replace('\\', '/');
 		int lastSlash = eclipseDir.lastIndexOf('/');
 		eclipseDir = eclipseDir.substring(0, lastSlash + 1);
-		System.out.println(eclipseDir);
 		try { // load properties file "propertyfile.txt", if it exists
 			properties = new Properties();
 			properties.load(new FileInputStream("propertyfile.txt"));
@@ -332,7 +331,7 @@ public class GUIMachine extends Observable {
 					properties.store(new FileOutputStream("propertyfile.txt"),
 							"File locations");
 				} catch (Exception e) {
-					System.out.println("Error writing properties file");
+					//System.out.println("Error writing properties file");
 				}
 				try {
 					boolean assembled = Assembler.assemble(source, outputExe);
@@ -452,9 +451,12 @@ public class GUIMachine extends Observable {
 		} catch (CodeAccessException e) {
 			halt();
 			running = false;
-			JOptionPane.showMessageDialog(frame,
-					"Code Access Exception for program counter " + pc,
-					"Warning", JOptionPane.WARNING_MESSAGE);
+			if(pc < 256) {
+				JOptionPane.showMessageDialog(frame,
+						"Code Access Exception for program counter " + pc,
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			}
+					
 
 		} catch (DivideByZeroException e) {
 			halt();
